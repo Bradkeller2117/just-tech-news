@@ -1,93 +1,90 @@
 const router = require('express').Router();
-const {user} = require('../../models');
-const User = require('../../models/user');
+const { User } = require('../../models');
 
-//Get /api/users
-router.get('/', (req,res) => {
-    //Access our User model and run .findall() method)
-    User.findAll({
-        attributes: { exclude: ['password'] }
-    })
+// get all users
+router.get('/', (req, res) => {
+  User.findAll({
+    attributes: { exclude: ['password'] }
+  })
     .then(dbUserData => res.json(dbUserData))
     .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
-//Get /api/users/1
-router.get('/:id', (req,res) => {
-    User.findOne({
-        attributes: { exclude : ['password']},
-        where: {
-            id: req.params.id
-        }
-    })
+router.get('/:id', (req, res) => {
+  User.findOne({
+    attributes: { exclude: ['password'] },
+    where: {
+      id: req.params.id
+    }
+  })
     .then(dbUserData => {
-        if (!dbUserData) {
-            res.status(404).json({message: 'No user found with this id'});
-            return;
-        }
-        res.json(dbUserData);
+      if (!dbUserData) {
+        res.status(404).json({ message: 'No user found with this id' });
+        return;
+      }
+      res.json(dbUserData);
     })
     .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
-//post /api/users
-router.post('/', (req,res) => {
-   //expects username,email,password
-    User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password:req.body.password
-    })
+router.post('/', (req, res) => {
+  // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
+  User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
+  })
     .then(dbUserData => res.json(dbUserData))
     .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
-//put /api/users/1
-router.put('/:id', (req,res) => {
-    User.update(req.body, {
-        where: {
-            id:req.params.id
-        }
-    })
+router.put('/:id', (req, res) => {
+  // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
+
+  // pass in req.body instead to only update what's passed through
+  User.update(req.body, {
+    where: {
+      id: req.params.id
+    }
+  })
     .then(dbUserData => {
-        if(!dbUserData[0]) {
-            res.status(404).json({ message: 'no user found with this id'});
-            return;
-        }
-        res.json(dbUserData);
+      if (!dbUserData[0]) {
+        res.status(404).json({ message: 'No user found with this id' });
+        return;
+      }
+      res.json(dbUserData);
     })
     .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
-//delete /api/users1
-router.delete('/:id', (req,res) =>{
-    User.destroy({
-        where: {
-            id: req.params.id
-        }
-    })
+router.delete('/:id', (req, res) => {
+  User.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
     .then(dbUserData => {
-        if (!dbUserData) {
-            res.status(404).json({message: 'no user found with this id'});
-            return;
-        }
-        res.json(dbUserData);
+      if (!dbUserData) {
+        res.status(404).json({ message: 'No user found with this id' });
+        return;
+      }
+      res.json(dbUserData);
     })
     .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
